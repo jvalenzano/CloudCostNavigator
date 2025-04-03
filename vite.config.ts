@@ -1,28 +1,36 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import themePlugin from "@replit/vite-plugin-shadcn-theme-json";
-import path, { dirname } from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import path from "path";
 import { fileURLToPath } from "url";
 
+// Development plugins
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import themePlugin from "@replit/vite-plugin-shadcn-theme-json";
+
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig(async () => {
+  // Base plugin list
   const plugins = [
     react(),
     runtimeErrorOverlay(),
     themePlugin(),
   ];
 
-  // Optional dev-only plugin for Replit
-  if (process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined) {
+  // Optional Replit plugin (only in Replit dev env)
+  if (
+    process.env.NODE_ENV !== "production" &&
+    process.env.REPL_ID !== undefined
+  ) {
     const { cartographer } = await import("@replit/vite-plugin-cartographer");
     plugins.push(cartographer());
   }
 
   return {
-    base: "/CloudCostNavigator/", // 👈 Needed for GitHub Pages!
+    base: "/CloudCostNavigator/", // GitHub Pages base path
+    root: path.resolve(__dirname, "client"), // Root source folder
+    appType: "spa", // Optional but accurate for Vite + React
     plugins,
     resolve: {
       alias: {
@@ -31,9 +39,8 @@ export default defineConfig(async () => {
         "@assets": path.resolve(__dirname, "attached_assets"),
       },
     },
-    root: path.resolve(__dirname, "client"),
     build: {
-      outDir: path.resolve(__dirname, "docs"), // 👈 Output to /docs
+      outDir: path.resolve(__dirname, "docs"), // For GitHub Pages
       emptyOutDir: true,
     },
   };
