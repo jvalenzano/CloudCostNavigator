@@ -5,7 +5,14 @@ import StepOne from "@/components/StepOne";
 import StepTwo from "@/components/StepTwo";
 import StepThree from "@/components/StepThree";
 import HelpDialog from "@/components/HelpDialog";
-import { ComputeRequirements, UsagePattern, PlatformSelections, ProviderCostEstimate, WizardState, SavedConfiguration } from "@shared/types";
+import {
+  ComputeRequirements,
+  UsagePattern,
+  PlatformSelections,
+  ProviderCostEstimate,
+  WizardState,
+  SavedConfiguration,
+} from "@shared/types";
 import { PLATFORMS } from "@shared/constants";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -16,84 +23,84 @@ export default function Home() {
     computeRequirements: {
       cpuCount: 4,
       memorySize: 16,
-      storageSize: 100
+      storageSize: 100,
     },
     usagePattern: {
       hoursPerDay: 8,
       daysPerMonth: 22,
-      isInterruptible: true
+      isInterruptible: true,
     },
     platformSelections: {
-      selectedPlatforms: PLATFORMS.map(p => p.id),
-      region: 'us-east'
+      selectedPlatforms: PLATFORMS.map((p) => p.id),
+      region: "us-east",
     },
-    costEstimates: null
+    costEstimates: null,
   });
-  
+
   // State for help dialog
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
-  
+
   // Toast hook for notifications
   const { toast } = useToast();
 
   const updateComputeRequirements = (updates: Partial<ComputeRequirements>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       computeRequirements: {
         ...prev.computeRequirements,
-        ...updates
-      }
+        ...updates,
+      },
     }));
   };
 
   const updateUsagePattern = (updates: Partial<UsagePattern>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       usagePattern: {
         ...prev.usagePattern,
-        ...updates
-      }
+        ...updates,
+      },
     }));
   };
 
   const updatePlatformSelections = (updates: Partial<PlatformSelections>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       platformSelections: {
         ...prev.platformSelections,
-        ...updates
-      }
+        ...updates,
+      },
     }));
   };
 
   const updateCostEstimates = (estimates: ProviderCostEstimate[] | null) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      costEstimates: estimates
+      costEstimates: estimates,
     }));
   };
 
   const goToStep = (step: number) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      currentStep: step
+      currentStep: step,
     }));
   };
 
   const goToNextStep = () => {
     if (state.currentStep < 3) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        currentStep: prev.currentStep + 1
+        currentStep: prev.currentStep + 1,
       }));
     }
   };
 
   const goToPreviousStep = () => {
     if (state.currentStep > 1) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        currentStep: prev.currentStep - 1
+        currentStep: prev.currentStep - 1,
       }));
     }
   };
@@ -104,32 +111,32 @@ export default function Home() {
       computeRequirements: {
         cpuCount: 4,
         memorySize: 16,
-        storageSize: 100
+        storageSize: 100,
       },
       usagePattern: {
         hoursPerDay: 8,
         daysPerMonth: 22,
-        isInterruptible: true
+        isInterruptible: true,
       },
       platformSelections: {
-        selectedPlatforms: PLATFORMS.map(p => p.id),
-        region: 'us-east'
+        selectedPlatforms: PLATFORMS.map((p) => p.id),
+        region: "us-east",
       },
-      costEstimates: null
+      costEstimates: null,
     });
   };
-  
+
   // Function to load a saved configuration
   const loadConfiguration = (config: SavedConfiguration) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       computeRequirements: config.computeRequirements,
       usagePattern: config.usagePattern,
       platformSelections: config.platformSelections,
       costEstimates: null, // Reset cost estimates to trigger a new calculation
-      currentStep: 3 // Go to the final step for cost calculation
+      currentStep: 3, // Go to the final step for cost calculation
     }));
-    
+
     toast({
       title: "Configuration Loaded",
       description: `"${config.name}" has been loaded successfully.`,
@@ -148,10 +155,10 @@ export default function Home() {
             </h1>
           </div>
           <div>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="lg"
-              className="rounded-full hover:bg-white/20 p-2 transition-all duration-200 hover:scale-105" 
+              className="rounded-full hover:bg-white/20 p-2 transition-all duration-200 hover:scale-105"
               onClick={() => setHelpDialogOpen(true)}
               aria-label="Help"
             >
@@ -165,11 +172,11 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8 flex-grow">
         {/* Step Progress */}
         <WizardSteps currentStep={state.currentStep} />
-        
+
         {/* Wizard Content */}
         <div className="max-w-4xl mx-auto">
           {state.currentStep === 1 && (
-            <StepOne 
+            <StepOne
               computeRequirements={state.computeRequirements}
               usagePattern={state.usagePattern}
               onComputeRequirementsChange={updateComputeRequirements}
@@ -177,18 +184,18 @@ export default function Home() {
               onNext={goToNextStep}
             />
           )}
-          
+
           {state.currentStep === 2 && (
-            <StepTwo 
+            <StepTwo
               platformSelections={state.platformSelections}
               onPlatformSelectionsChange={updatePlatformSelections}
               onNext={goToNextStep}
               onPrevious={goToPreviousStep}
             />
           )}
-          
+
           {state.currentStep === 3 && (
-            <StepThree 
+            <StepThree
               computeRequirements={state.computeRequirements}
               usagePattern={state.usagePattern}
               platformSelections={state.platformSelections}
@@ -205,14 +212,25 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-neutral-darkest text-neutral-light py-4">
         <div className="container mx-auto px-4 text-center text-sm">
-          <p>Ephemeral Compute Cost Calculator | Last updated: {new Date().toLocaleDateString()} | Pricing data refreshed daily</p>
-          <p className="mt-2">For questions or support, contact <a href="mailto:support@example.com" className="text-primary-light hover:underline">support@example.com</a></p>
+          <p>
+            Ephemeral Compute Cost Calculator | Last updated:{" "}
+            {new Date().toLocaleDateString()} | Pricing data refreshed daily
+          </p>
+          <p className="mt-2">
+            For questions or support, contact{" "}
+            <a
+              href="mailto:support@example.com"
+              className="text-primary-light hover:underline"
+            >
+              support@example.com
+            </a>
+          </p>
         </div>
       </footer>
-      
+
       {/* Help dialog component */}
-      <HelpDialog 
-        open={helpDialogOpen} 
+      <HelpDialog
+        open={helpDialogOpen}
         onOpenChange={setHelpDialogOpen}
         currentStep={state.currentStep}
       />
