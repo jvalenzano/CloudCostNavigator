@@ -1,18 +1,13 @@
-name: Deploy to GitHub Pages (Official)
+name: Deploy with GitHub Pages (Official Actions)
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
-  contents: read
   pages: write
   id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  contents: read
 
 jobs:
   build:
@@ -22,21 +17,21 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🛠️ Build the app
+      - name: 🛠️ Build with Vite
         run: npm run build
 
-      - name: 📤 Upload artifact
+      - name: 📤 Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./docs
+          path: docs
 
   deploy:
     needs: build
@@ -44,6 +39,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
